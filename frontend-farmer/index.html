@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PestWatch NG</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PestWatch NG</h1>
+            <p>Kwara State Pilot</p>
+        </header>
+
+        <!-- Login/Register Section -->
+        <section id="auth-section">
+            <input type="text" id="reg-name" placeholder="Your Name">
+            <input type="tel" id="reg-phone" placeholder="Phone Number">
+            <button onclick="registerUser()">Register/Login</button>
+        </section>
+
+        <!-- Reporting Section (Hidden until logged in) -->
+        <section id="report-section" style="display:none;">
+            <h2>Report Issue</h2>
+            <form id="pest-form">
+                <label>Crop Type:</label>
+                <select id="crop-type">
+                    <option value="groundnut">Groundnut</option>
+                    <option value="tomato">Tomato</option>
+                    <option value="maize">Maize</option>
+                    <option value="rice">Rice</option>
+                </select>
+
+                <label>Description (What do you see?):</label>
+                <textarea id="description" placeholder="e.g., Leaves turning yellow, holes in stems..."></textarea>
+
+                <label>Photo Evidence:</label>
+                <input type="file" id="photo" accept="image/*">
+
+                <button type="submit">Submit Report</button>
+            </form>
+            <div id="status-msg"></div>
+        </section>
+
+        <!-- Alert Inbox -->
+        <section id="alerts-section" style="display:none;">
+            <h2>Your Alerts</h2>
+            <ul id="alert-list"></ul>
+        </section>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PestWatch Verifier</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #2E8B57; color: white; }
+        .btn-confirm { background: green; color: white; border: none; padding: 5px 10px; cursor: pointer; }
+        .btn-reject { background: red; color: white; border: none; padding: 5px 10px; cursor: pointer; }
+        img.thumb { height: 50px; width: 50px; object-fit: cover; }
+    </style>
+</head>
+<body>
+    <h1>Extension Officer Dashboard</h1>
+    <p>Review incoming pest reports from Ifelodun/Kaiama LGAs.</p>
+    
+    <table id="reports-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Farmer</th>
+                <th>Crop</th>
+                <th>Symptoms</th>
+                <th>Photo</th>
+                <th>Triage Guess</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        const OFFICER_ID = 'admin-officer-001'; // Hardcoded for demo
+        
+        async function loadReports() {
+            const res = await fetch('http://localhost:5000/api/reports/pending');
+            const reports = await res.json();
+            const tbody = document.querySelector('#reports-table tbody');
+            tbody.innerHTML = '';
+
+            reports.forEach(r => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${r.id.substring(0,8)}...</td>
+                    <td>${r.farmer_name}<br><small>${r.farmer_phone}</small></td>
+                    <td>${r.crop_type}</td>
+                    <td>${r.symptom_description}</td>
+                    <td>${r.image_path ? `<img src="http://localhost:5000${r.image_path}" class="thumb">` : 'N/A'}</td>
+                    <td>${r.probable_pest} (${r.confidence_level}%)</td>
+                    <td>
+                        <button class="btn-confirm" onclick="verify('${r.id}', 'confirm')">Confirm & Alert</button>
+                        <button class="btn-reject" onclick="verify('${r.id}', 'reject')">Reject</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        async function verify(reportId, action) {
+            const confirmedPest = prompt("Enter Verified Pest Name (or leave blank to accept guess):");
+            
+            await fetch(`http://localhost:5000/api/verify/${reportId}`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    officerId: OFFICER_ID,
+                    action: action,
+                    confirmedPestName: confirmedPest
+                })
+            });
+            alert(action === 'confirm' ? 'Verified! SMS alerts dispatched to neighbors.' : 'Rejected.');
+            loadReports();
+        }
+
+        // Refresh every 5 seconds
+        setInterval(loadReports, 5000);
+        loadReports();
+    </script>
+</body>
+</html>
