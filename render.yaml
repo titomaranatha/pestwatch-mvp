@@ -2,8 +2,10 @@ services:
   - type: web
     name: pestwatch-mvp
     runtime: node
-    buildCommand: npm install
+    buildCommand: npm install --build-from-source=sqlite3
     startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
+      - key: NODE_VERSION
+        value: "20"
