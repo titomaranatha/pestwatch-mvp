@@ -18,15 +18,17 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(bodyParser.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Multer Config for Images
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)){
+    fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const dir = './uploads';
-        if (!fs.existsSync(dir)){
-            fs.mkdirSync(dir);
-        }
-        cb(null, dir);
+        cb(null, uploadsDir);
     },
     filename: (req, file, cb) => {
         cb(null, `${Date.now()}-${file.originalname}`);
@@ -103,33 +105,43 @@ app.post('/api/verify/:reportId', async (req, res) => {
 });
 
 // Helper: Calculate Distance & Send SMS
-async function triggerGeofencedAlerts(sourceReport, pestName) {
+function triggerGeofencedAlerts(sourceReport, pestName) {
     const RADIUS_KM = 5; // Alert radius
     
-    // Get all farmers who are NOT the reporter
-    db.all(`SELECT * FROM users WHERE role = 'farmer' AND id != ?`, [sourceReport.user_id], async (err, neighbors) => {
-        if (err) return;
+    return new Promise((resolve) => {
+        // Get all farmers who are NOT the reporter
+        db.all(`SELECT * FROM users WHERE role = 'farmer' AND id != ?`, [sourceReport.user_id], async (err, neighbors) => {
+            if (err || !neighbors) return resolve();
 
-        for (let neighbor of neighbors) {
-            const distance = calculateDistance(
-                sourceReport.lat, sourceReport.lng,
-                neighbor.lat, neighbor.lng
-            );
+            const insertPromises = [];
+            for (let neighbor of neighbors) {
+                const distance = calculateDistance(
+                    sourceReport.lat, sourceReport.lng,
+                    neighbor.lat, neighbor.lng
+                );
 
-            if (distance <= RADIUS_KM) {
-                // Construct Message per Doc Section 4.1
-                const msg = `ALERT: ${pestName} detected nearby (${Math.round(distance)}km away). 
-Action: Scout your field now. Remove infected leaves. Contact nearest agro-dealer if severe.`;
+                if (distance <= RADIUS_KM) {
+                    // Construct Message per Doc Section 4.1
+                    const msg = `ALERT: ${pestName} detected nearby (${Math.round(distance)}km away).\nAction: Scout your field now. Remove infected leaves. Contact nearest agro-dealer if severe.`;
 
-                // Send SMS
-                const smsRes = await sendSms(neighbor.phone, msg);
-                
-                // Log Alert
-                const alertId = uuidv4();
-                db.run(`INSERT INTO alerts_sent (id, report_id, recipient_user_id, message_text) VALUES (?, ?, ?, ?)`,
-                    [alertId, sourceReport.id, neighbor.id, msg]);
+                    // Send SMS
+                    await sendSms(neighbor.phone, msg);
+                    
+                    // Log Alert
+                    const alertId = uuidv4();
+                    const p = new Promise(r => {
+                        db.run(
+                            `INSERT INTO alerts_sent (id, report_id, recipient_user_id, message_text) VALUES (?, ?, ?, ?)`,
+                            [alertId, sourceReport.id, neighbor.id, msg],
+                            r
+                        );
+                    });
+                    insertPromises.push(p);
+                }
             }
-        }
+            await Promise.all(insertPromises);
+            resolve();
+        });
     });
 }
 
@@ -154,6 +166,37 @@ app.get('/api/reports/pending', (req, res) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json(rows);
     });
+});
+
+// 5. Get Alerts for a specific Farmer (for in-app alert inbox)
+app.get('/api/alerts/:userId', (req, res) => {
+    const { userId } = req.params;
+    db.all(
+        `SELECT * FROM alerts_sent WHERE recipient_user_id = ? ORDER BY sent_at DESC`,
+        [userId],
+        (err, rows) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json(rows);
+        }
+    );
+});
+
+// 6. Health check endpoint for cloud hosting
+app.get('/api/health', (req, res) => {
+    res.json({ status: 'ok', service: 'pestwatch-backend', timestamp: new Date().toISOString() });
+});
+
+// Frontend HTML routing helpers
+app.get('/farmer', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/farmer/index.html'));
+});
+
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/admin/index.html'));
+});
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
 app.listen(PORT, () => {

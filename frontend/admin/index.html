@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PestWatch NG - Extension Officer Verifier Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            margin: 0;
+            padding: 24px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .header-title h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        .header-title p {
+            margin: 4px 0 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .btn-link {
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            background: #ffffff;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+            transition: all 0.15s ease;
+        }
+        .btn-link:hover {
+            background: #f1f5f9;
+        }
+        .btn-refresh {
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            background: #15803d;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        .btn-refresh:hover {
+            background: #166534;
+        }
+        .notice-banner {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #065f46;
+            line-height: 1.5;
+        }
+        .card {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+        thead {
+            background: #f1f5f9;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        th {
+            padding: 14px 16px;
+            font-weight: 600;
+            color: #475569;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+        tr:hover td {
+            background-color: #f8fafc;
+        }
+        .farmer-info strong {
+            color: #0f172a;
+        }
+        .farmer-info small {
+            color: #64748b;
+        }
+        .crop-badge {
+            display: inline-block;
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: capitalize;
+        }
+        .confidence-badge {
+            display: inline-block;
+            background: #fef3c7;
+            color: #92400e;
+            padding: 3px 8px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+        .thumb-img {
+            height: 52px;
+            width: 52px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+        .thumb-img:hover {
+            transform: scale(1.05);
+        }
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-confirm {
+            background: #16a34a;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        .btn-confirm:hover {
+            background: #15803d;
+        }
+        .btn-reject {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        .btn-reject:hover {
+            background: #dc2626;
+        }
+        .empty-state {
+            padding: 48px 24px;
+            text-align: center;
+            color: #64748b;
+        }
+        .empty-state h3 {
+            margin: 0 0 6px;
+            color: #334155;
+            font-size: 16px;
+        }
+        .badge-live {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #16a34a;
+            font-weight: 600;
+        }
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #16a34a;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7);
+            animation: pulse 1.8s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(22, 163, 74, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-title">
+                <h1>🛡️ PestWatch Verifier Dashboard</h1>
+                <p>Kwara State Extension Service • Ifelodun &amp; Kaiama LGAs</p>
+            </div>
+            <div class="nav-links">
+                <span class="badge-live"><span class="badge-dot"></span> Auto-polling (5s)</span>
+                <button class="btn-refresh" onclick="loadReports()">🔄 Refresh</button>
+                <a href="/farmer" class="btn-link" target="_blank">Open Farmer App ↗</a>
+                <a href="/" class="btn-link">← Hub</a>
+            </div>
+        </header>
+
+        <div class="notice-banner">
+            <strong>Human-in-the-Loop Protocol:</strong> Extension officers must verify symptom reports before geofenced SMS alerts are triggered to neighboring farms within 5km. Confirming a report triggers automatic neighbor notifications.
+        </div>
+
+        <div class="card">
+            <div class="table-responsive">
+                <table id="reports-table">
+                    <thead>
+                        <tr>
+                            <th>Report ID</th>
+                            <th>Farmer</th>
+                            <th>Crop</th>
+                            <th>Symptoms Described</th>
+                            <th>Photo</th>
+                            <th>AI Triage Guess</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="7" class="empty-state">Loading pending reports...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const OFFICER_ID = 'admin-officer-kwara-001';
+        const API_BASE = window.location.origin.startsWith('http') ? '' : 'http://localhost:5000';
+
+        async function loadReports() {
+            try {
+                const res = await fetch(`${API_BASE}/api/reports/pending`);
+                if (!res.ok) throw new Error("Server returned " + res.status);
+                const reports = await res.json();
+                const tbody = document.querySelector('#reports-table tbody');
+
+                if (!reports || reports.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="empty-state">
+                                <h3>No Pending Reports 🎉</h3>
+                                <p>All incoming farmer reports have been verified. Submit a new symptom from the <a href="/farmer" target="_blank" style="color:#16a34a; font-weight:600;">Farmer App</a> to see it appear here live.</p>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                reports.forEach(r => {
+                    const row = document.createElement('tr');
+                    const imgHtml = r.image_path 
+                        ? `<a href="${API_BASE}${r.image_path}" target="_blank"><img src="${API_BASE}${r.image_path}" class="thumb-img" alt="Pest symptom" title="Click to inspect full photo"></a>` 
+                        : '<span style="color:#94a3b8; font-size:12px;">No photo</span>';
+
+                    row.innerHTML = `
+                        <td><code style="font-size:11px; color:#475569;">${(r.id || '').substring(0, 8)}</code></td>
+                        <td class="farmer-info">
+                            <strong>${r.farmer_name || 'Anonymous Farmer'}</strong><br>
+                            <small>📱 ${r.farmer_phone || 'N/A'}</small>
+                        </td>
+                        <td><span class="crop-badge">${r.crop_type || 'Unknown'}</span></td>
+                        <td style="max-width: 280px; font-size: 13px; color: #334155;">${r.symptom_description || ''}</td>
+                        <td>${imgHtml}</td>
+                        <td>
+                            <strong style="color:#0f172a;">${r.probable_pest || 'Unknown'}</strong><br>
+                            <span class="confidence-badge">${r.confidence_level || 0}% match</span>
+                        </td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn-confirm" onclick="verify('${r.id}', 'confirm', '${(r.probable_pest || '').replace(/'/g, "\\'")}')">
+                                    ✅ Confirm &amp; Alert
+                                </button>
+                                <button class="btn-reject" onclick="verify('${r.id}', 'reject')">
+                                    ❌ Reject
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (err) {
+                console.error("Error loading reports:", err);
+            }
+        }
+
+        async function verify(reportId, action, defaultPestName = '') {
+            let confirmedPest = defaultPestName;
+
+            if (action === 'confirm') {
+                const promptVal = prompt(
+                    `Confirm pest name for dispatch to neighboring farmers within 5km:`,
+                    defaultPestName || 'Rosette Virus'
+                );
+                if (promptVal === null) return; // user cancelled prompt
+                confirmedPest = promptVal.trim() || defaultPestName;
+            } else {
+                if (!confirm("Are you sure you want to reject this report? No alerts will be sent.")) {
+                    return;
+                }
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/api/verify/${reportId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        officerId: OFFICER_ID,
+                        action: action,
+                        confirmedPestName: confirmedPest
+                    })
+                });
+                const result = await res.json();
+                if (res.ok) {
+                    alert(action === 'confirm' 
+                        ? `✅ Report verified as "${confirmedPest}". 5km geofenced outbreak alerts have been dispatched!` 
+                        : '❌ Report rejected.'
+                    );
+                    loadReports();
+                } else {
+                    alert("Verification error: " + (result.error || "Unknown error"));
+                }
+            } catch (err) {
+                alert("Failed to communicate with server: " + err.message);
+            }
+        }
+
+        // Auto-refresh every 5 seconds
+        setInterval(loadReports, 5000);
+        loadReports();
+    </script>
+</body>
+</html>

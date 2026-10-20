@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PestWatch NG - Farmer Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="nav-link">← Back to Demo Hub</a>
+        <header>
+            <h1>🌿 PestWatch NG</h1>
+            <p>Community Early Warning System (Kwara State)</p>
+            <span class="badge">Farmer Mobile Client</span>
+        </header>
+
+        <!-- Login/Register Section -->
+        <section id="auth-section">
+            <h2>Farmer Sign-In / Register</h2>
+            <p style="font-size: 13px; color: #64748b; margin-top: -6px;">Enter your details to report crop symptoms and receive local outbreak alerts.</p>
+            <label for="reg-name">Full Name</label>
+            <input type="text" id="reg-name" placeholder="e.g. Alhaji Musa">
+            
+            <label for="reg-phone">Phone Number</label>
+            <input type="tel" id="reg-phone" placeholder="e.g. 08011111111">
+            
+            <button onclick="registerUser()">Enter Farmer Portal</button>
+        </section>
+
+        <!-- Reporting Section (Hidden until logged in) -->
+        <section id="report-section" style="display:none;">
+            <h2>🌾 Report Crop Symptom</h2>
+            <form id="pest-form">
+                <label for="crop-type">Crop Type</label>
+                <select id="crop-type">
+                    <option value="groundnut">Groundnut</option>
+                    <option value="tomato">Tomato</option>
+                    <option value="maize">Maize</option>
+                    <option value="rice">Rice</option>
+                </select>
+
+                <label for="description">What do you observe? (Plain description)</label>
+                <textarea id="description" placeholder="e.g. Leaves turning yellow, mottled and stunted growth..." required></textarea>
+
+                <label for="photo">Photo Evidence (Optional)</label>
+                <input type="file" id="photo" accept="image/*">
+
+                <button type="submit">Submit for Officer Verification</button>
+            </form>
+            <div id="status-msg"></div>
+        </section>
+
+        <!-- Alert Inbox -->
+        <section id="alerts-section" style="display:none;">
+            <h2>🔔 Your Geofenced Alerts (5km)</h2>
+            <ul id="alert-list"></ul>
+        </section>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

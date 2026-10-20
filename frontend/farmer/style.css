@@ -1,0 +1,179 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #f0f7f2 0%, #e8f3ec 100%);
+    margin: 0;
+    padding: 16px;
+    color: #1e293b;
+    min-height: 100vh;
+}
+
+.nav-link {
+    display: inline-block;
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: #2e7d32;
+    text-decoration: none;
+    font-weight: 500;
+}
+.nav-link:hover {
+    text-decoration: underline;
+}
+
+.container {
+    max-width: 440px;
+    margin: 10px auto;
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(46, 125, 50, 0.1);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    color: #1b5e20;
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+header p {
+    color: #64748b;
+    font-size: 13px;
+    margin: 4px 0 0;
+}
+
+.badge {
+    display: inline-block;
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 9999px;
+    margin-top: 6px;
+}
+
+section {
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 16px;
+    color: #0f172a;
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+label {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 4px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #334155;
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="file"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    background: #fff;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #2e7d32;
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+button {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: #2e7d32;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    margin-top: 14px;
+    transition: background-color 0.15s ease, transform 0.05s ease;
+}
+
+button:hover {
+    background-color: #246527;
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#status-msg {
+    margin-top: 14px;
+    padding: 12px;
+    border-radius: 8px;
+    display: none;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.success {
+    background-color: #dcfce7;
+    color: #14532d;
+    border: 1px solid #86efac;
+}
+
+.error {
+    background-color: #fee2e2;
+    color: #7f1d1d;
+    border: 1px solid #fca5a5;
+}
+
+#alert-list {
+    padding-left: 0;
+    margin: 0;
+}
+
+.alert-item {
+    background: #fffbeb;
+    border-left: 4px solid #f59e0b;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    list-style: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}

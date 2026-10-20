@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PestWatch NG - Community Early Warning System MVP</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #15803d;
+            --primary-dark: #166534;
+            --primary-light: #dcfce7;
+            --accent: #ca8a04;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            width: 100%;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .pill-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            border: 1px solid rgba(22, 101, 52, 0.2);
+        }
+
+        .hero h1 {
+            font-size: clamp(28px, 5vw, 44px);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--text-main);
+            margin-bottom: 12px;
+        }
+
+        .hero h1 span {
+            color: var(--primary);
+        }
+
+        .hero p {
+            font-size: clamp(16px, 2.5vw, 19px);
+            color: var(--text-muted);
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        /* Portal Cards Grid */
+        .portal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .portal-card {
+            background: var(--surface);
+            border-radius: 18px;
+            padding: 32px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .portal-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.08);
+            border-color: #cbd5e1;
+        }
+
+        .portal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+        }
+
+        .card-farmer::before {
+            background: linear-gradient(90deg, #16a34a, #22c55e);
+        }
+
+        .card-admin::before {
+            background: linear-gradient(90deg, #0284c7, #38bdf8);
+        }
+
+        .card-icon {
+            font-size: 38px;
+            margin-bottom: 16px;
+        }
+
+        .card-tag {
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .card-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        .card-desc {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 24px;
+            flex-grow: 1;
+        }
+
+        .features-list {
+            list-style: none;
+            margin-bottom: 28px;
+            font-size: 13px;
+            color: #334155;
+        }
+
+        .features-list li {
+            padding: 4px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn {
+            display: block;
+            text-align: center;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 15px;
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+
+        .btn-farmer {
+            background-color: var(--primary);
+            color: #ffffff;
+        }
+        .btn-farmer:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-admin {
+            background-color: #0f172a;
+            color: #ffffff;
+        }
+        .btn-admin:hover {
+            background-color: #1e293b;
+        }
+
+        /* Demo Walkthrough Box */
+        .walkthrough-box {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+        }
+
+        .walkthrough-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 16px;
+        }
+
+        .walkthrough-header h2 {
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .step-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .step-num {
+            display: inline-block;
+            background: #e2e8f0;
+            color: #334155;
+            font-weight: 700;
+            font-size: 12px;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        .step-item h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #1e293b;
+        }
+
+        .step-item p {
+            font-size: 12.5px;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 24px;
+            font-size: 13px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            background: var(--surface);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero -->
+        <div class="hero">
+            <div class="pill-badge">
+                <span>🌱</span> Kwara State Agricultural Pilot • MVP Ready
+            </div>
+            <h1>🌿 <span>PestWatch NG</span> System</h1>
+            <p>Community-led early warning system empowering smallholder farmers to report symptoms in plain language, triaged by AI and verified by extension officers.</p>
+        </div>
+
+        <!-- Portal Cards -->
+        <div class="portal-grid">
+            <!-- Farmer App -->
+            <div class="portal-card card-farmer">
+                <div>
+                    <div class="card-icon">👨‍🌾</div>
+                    <div class="card-tag">For Smallholder Farmers</div>
+                    <h2 class="card-title">Farmer Mobile Portal</h2>
+                    <p class="card-desc">Designed for mobile browsers with offline-friendly structure and zero scientific jargon required.</p>
+                    <ul class="features-list">
+                        <li>✔️ Plain symptom descriptions (e.g. "yellow leaves")</li>
+                        <li>✔️ Automated keyword triage prediction</li>
+                        <li>✔️ Photo evidence upload support</li>
+                        <li>✔️ Live geofenced SMS outbreak feed (5km radius)</li>
+                    </ul>
+                </div>
+                <a href="/farmer" class="btn btn-farmer">Launch Farmer App →</a>
+            </div>
+
+            <!-- Officer Dashboard -->
+            <div class="portal-card card-admin">
+                <div>
+                    <div class="card-icon">🛡️</div>
+                    <div class="card-tag">For Agricultural Verifiers</div>
+                    <h2 class="card-title">Extension Officer Dashboard</h2>
+                    <p class="card-desc">Human-in-the-loop dashboard to review incoming symptom reports before any community alert is triggered.</p>
+                    <ul class="features-list">
+                        <li>✔️ Live stream of pending crop reports</li>
+                        <li>✔️ View symptom descriptions &amp; photos</li>
+                        <li>✔️ Confirm AI triage or override diagnosis</li>
+                        <li>✔️ One-click trigger for 5km geofenced SMS</li>
+                    </ul>
+                </div>
+                <a href="/admin" class="btn btn-admin">Launch Verifier Dashboard →</a>
+            </div>
+        </div>
+
+        <!-- Walkthrough Guide -->
+        <div class="walkthrough-box">
+            <div class="walkthrough-header">
+                <h2>🧪 2-Minute Demonstration Walkthrough for Reviewers</h2>
+                <span style="font-size: 12px; color: #64748b; font-weight: 500;">Simulates live neighbor geofencing</span>
+            </div>
+            <div class="steps-grid">
+                <div class="step-item">
+                    <span class="step-num">1</span>
+                    <h4>Register Farmer A</h4>
+                    <p>Open <a href="/farmer" style="color:var(--primary); font-weight:600;">Farmer App</a> in Tab 1. Register as "Alhaji Musa" (Phone: <code>08011111111</code>).</p>
+                </div>
+                <div class="step-item">
+                    <span class="step-num">2</span>
+                    <h4>Register Neighbor B</h4>
+                    <p>Open <a href="/farmer" style="color:var(--primary); font-weight:600;">Farmer App</a> in an Incognito tab. Register as "Baba Sule" (Phone: <code>08022222222</code>).</p>
+                </div>
+                <div class="step-item">
+                    <span class="step-num">3</span>
+                    <h4>Submit Symptom Report</h4>
+                    <p>In Tab 1, pick <strong>Groundnut</strong> and type: <em>"Leaves turning yellow and stunted"</em>. Click Submit.</p>
+                </div>
+                <div class="step-item">
+                    <span class="step-num">4</span>
+                    <h4>Officer Verifies</h4>
+                    <p>Open <a href="/admin" style="color:var(--primary); font-weight:600;">Officer Dashboard</a>. Confirm the report. Watch Baba Sule (Tab 2) receive the geofenced alert live!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p><strong>PestWatch NG (MVP)</strong> • Community Early Warning System • Built with Node.js, Express &amp; SQLite</p>
+    </footer>
+</body>
+</html>
