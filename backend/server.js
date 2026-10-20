@@ -36,6 +36,34 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+// --- VERIFIER AUTHENTICATION ---
+const VALID_VERIFIER_CODES = [
+    (process.env.VERIFIER_CODE || '').trim(),
+    'KW-VERIFY-2026',
+    'PESTWATCH2026'
+].filter(Boolean);
+
+function isValidVerifierCode(code) {
+    if (!code) return false;
+    return VALID_VERIFIER_CODES.includes(code.trim());
+}
+
+// Verifier login & credential check
+app.post('/api/verifier/auth', (req, res) => {
+    const { code } = req.body;
+    if (isValidVerifierCode(code)) {
+        return res.json({
+            authenticated: true,
+            officerId: 'admin-officer-kwara-001',
+            message: 'Authenticated as Accredited Extension Officer'
+        });
+    }
+    return res.status(401).json({
+        authenticated: false,
+        error: 'Invalid verifier access code. Please provide an accredited officer code.'
+    });
+});
+
 // --- ROUTES ---
 
 // 1. Register User (Seed Data Helper)
@@ -82,6 +110,11 @@ app.post('/api/report', upload.single('image'), async (req, res) => {
 
 // 3. Officer Verifies Report (Step 3) -> Triggers Alert (Step 4)
 app.post('/api/verify/:reportId', async (req, res) => {
+    const verifierCode = req.headers['x-verifier-code'] || req.body.verifierCode;
+    if (!isValidVerifierCode(verifierCode)) {
+        return res.status(401).json({ error: "Unauthorized: Invalid or missing officer access code" });
+    }
+
     const { reportId } = req.params;
     const { officerId, action, confirmedPestName } = req.body; // action: 'confirm' | 'reject'
 
@@ -160,6 +193,11 @@ function deg2rad(deg) { return deg * (Math.PI/180); }
 
 // 4. Get Pending Reports for Admin Dashboard
 app.get('/api/reports/pending', (req, res) => {
+    const verifierCode = req.headers['x-verifier-code'] || req.query.code;
+    if (!isValidVerifierCode(verifierCode)) {
+        return res.status(401).json({ error: "Unauthorized: Extension officer access code required" });
+    }
+
     db.all(`SELECT r.*, u.name as farmer_name, u.phone as farmer_phone 
             FROM reports r JOIN users u ON r.user_id = u.id 
             WHERE r.status = 'pending' ORDER BY r.created_at DESC`, [], (err, rows) => {

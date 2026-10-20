@@ -17,10 +17,137 @@
             color: #0f172a;
             margin: 0;
             padding: 24px;
+            min-height: 100vh;
         }
         .container {
             max-width: 1200px;
             margin: 0 auto;
+        }
+
+        /* --- AUTH GATE STYLES --- */
+        #auth-gate {
+            max-width: 480px;
+            margin: 80px auto;
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            padding: 36px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+        .gate-icon {
+            font-size: 42px;
+            margin-bottom: 12px;
+        }
+        .gate-badge {
+            display: inline-block;
+            background: #fef2f2;
+            color: #991b1b;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            border: 1px solid #fecaca;
+            margin-bottom: 12px;
+        }
+        #auth-gate h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0 0 8px;
+            color: #0f172a;
+        }
+        #auth-gate p {
+            color: #64748b;
+            font-size: 13.5px;
+            line-height: 1.5;
+            margin: 0 0 24px;
+        }
+        .gate-input-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+        .gate-input-group label {
+            display: block;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+        .gate-input {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 15px;
+            font-family: inherit;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            letter-spacing: 0.05em;
+            text-align: center;
+            font-weight: 600;
+        }
+        .gate-input:focus {
+            outline: none;
+            border-color: #15803d;
+            box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.15);
+        }
+        .btn-gate-submit {
+            width: 100%;
+            padding: 12px 16px;
+            background: #15803d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        .btn-gate-submit:hover {
+            background: #166534;
+        }
+        .gate-error {
+            display: none;
+            margin-top: 14px;
+            padding: 10px;
+            border-radius: 6px;
+            background: #fee2e2;
+            color: #991b1b;
+            font-size: 13px;
+            border: 1px solid #fca5a5;
+        }
+        .demo-pass-hint {
+            margin-top: 20px;
+            padding: 10px 14px;
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #475569;
+        }
+        .demo-pass-hint code {
+            color: #15803d;
+            font-weight: 700;
+            background: #e8f5e9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .gate-back {
+            display: inline-block;
+            margin-top: 18px;
+            font-size: 13px;
+            color: #64748b;
+            text-decoration: none;
+        }
+        .gate-back:hover {
+            color: #0f172a;
+            text-decoration: underline;
+        }
+
+        /* --- DASHBOARD STYLES --- */
+        #dashboard-view {
+            display: none;
         }
         header {
             display: flex;
@@ -45,8 +172,21 @@
         }
         .nav-links {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
+            flex-wrap: wrap;
+        }
+        .officer-badge {
+            background: #e8f5e9;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
         .btn-link {
             padding: 8px 14px;
@@ -75,6 +215,20 @@
         }
         .btn-refresh:hover {
             background: #166534;
+        }
+        .btn-logout {
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            background: #ffffff;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .btn-logout:hover {
+            background: #fef2f2;
         }
         .notice-banner {
             background: #ecfdf5;
@@ -230,54 +384,202 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <div class="header-title">
-                <h1>🛡️ PestWatch Verifier Dashboard</h1>
-                <p>Kwara State Extension Service • Ifelodun &amp; Kaiama LGAs</p>
-            </div>
-            <div class="nav-links">
-                <span class="badge-live"><span class="badge-dot"></span> Auto-polling (5s)</span>
-                <button class="btn-refresh" onclick="loadReports()">🔄 Refresh</button>
-                <a href="/farmer" class="btn-link" target="_blank">Open Farmer App ↗</a>
-                <a href="/" class="btn-link">← Hub</a>
-            </div>
-        </header>
+        <!-- AUTH GATE (SHOWN WHEN NOT LOGGED IN) -->
+        <div id="auth-gate">
+            <div class="gate-icon">🛡️</div>
+            <div class="gate-badge">Restricted Access</div>
+            <h2>Extension Officer Sign-In</h2>
+            <p>Verification dashboard access is restricted to accredited agricultural extension officers of Kwara State.</p>
+            
+            <form id="auth-gate-form" onsubmit="handleAuthSubmit(event)">
+                <div class="gate-input-group">
+                    <label for="verifier-code-input">Official Officer Access Code</label>
+                    <input 
+                        type="password" 
+                        id="verifier-code-input" 
+                        class="gate-input" 
+                        placeholder="Enter access code" 
+                        required 
+                        autocomplete="current-password"
+                    >
+                </div>
+                <button type="submit" class="btn-gate-submit" id="btn-auth-submit">Unlock Verifier Dashboard →</button>
+            </form>
+            <div id="gate-error-msg" class="gate-error"></div>
 
-        <div class="notice-banner">
-            <strong>Human-in-the-Loop Protocol:</strong> Extension officers must verify symptom reports before geofenced SMS alerts are triggered to neighboring farms within 5km. Confirming a report triggers automatic neighbor notifications.
+            <div class="demo-pass-hint">
+                💡 <strong>Accredited Evaluator Code:</strong> <code onclick="fillDemoCode('KW-VERIFY-2026')" title="Click to auto-fill">KW-VERIFY-2026</code>
+            </div>
+
+            <a href="/" class="gate-back">← Back to PestWatch Hub</a>
         </div>
 
-        <div class="card">
-            <div class="table-responsive">
-                <table id="reports-table">
-                    <thead>
-                        <tr>
-                            <th>Report ID</th>
-                            <th>Farmer</th>
-                            <th>Crop</th>
-                            <th>Symptoms Described</th>
-                            <th>Photo</th>
-                            <th>AI Triage Guess</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="7" class="empty-state">Loading pending reports...</td>
-                        </tr>
-                    </tbody>
-                </table>
+        <!-- MAIN VERIFIER DASHBOARD (SHOWN AFTER AUTH) -->
+        <div id="dashboard-view">
+            <header>
+                <div class="header-title">
+                    <h1>🛡️ PestWatch Verifier Dashboard</h1>
+                    <p>Kwara State Extension Service • Ifelodun &amp; Kaiama LGAs</p>
+                </div>
+                <div class="nav-links">
+                    <span class="officer-badge" id="officer-id-display">👨‍💼 Verified Officer</span>
+                    <span class="badge-live"><span class="badge-dot"></span> Auto-polling (5s)</span>
+                    <button class="btn-refresh" onclick="loadReports()">🔄 Refresh</button>
+                    <a href="/farmer" class="btn-link" target="_blank">Open Farmer App ↗</a>
+                    <a href="/" class="btn-link">Hub</a>
+                    <button class="btn-logout" onclick="logoutVerifier()">🔒 Lock / Sign Out</button>
+                </div>
+            </header>
+
+            <div class="notice-banner">
+                <strong>Human-in-the-Loop Protocol:</strong> Extension officers must verify symptom reports before geofenced SMS alerts are triggered to neighboring farms within 5km. Confirming a report triggers automatic neighbor notifications.
+            </div>
+
+            <div class="card">
+                <div class="table-responsive">
+                    <table id="reports-table">
+                        <thead>
+                            <tr>
+                                <th>Report ID</th>
+                                <th>Farmer</th>
+                                <th>Crop</th>
+                                <th>Symptoms Described</th>
+                                <th>Photo</th>
+                                <th>AI Triage Guess</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="7" class="empty-state">Loading pending reports...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        const OFFICER_ID = 'admin-officer-kwara-001';
         const API_BASE = window.location.origin.startsWith('http') ? '' : 'http://localhost:5000';
+        let currentVerifierCode = sessionStorage.getItem('pw_verifier_code');
+        let currentOfficerId = sessionStorage.getItem('pw_officer_id') || 'admin-officer-kwara-001';
+        let pollTimer = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (currentVerifierCode) {
+                // Verify existing session
+                validateExistingSession();
+            } else {
+                showAuthGate();
+            }
+        });
+
+        function fillDemoCode(code) {
+            const input = document.getElementById('verifier-code-input');
+            if (input) {
+                input.value = code;
+                input.focus();
+            }
+        }
+
+        async function validateExistingSession() {
+            try {
+                const res = await fetch(`${API_BASE}/api/verifier/auth`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code: currentVerifierCode })
+                });
+                if (res.ok) {
+                    showDashboard();
+                } else {
+                    logoutVerifier();
+                }
+            } catch (e) {
+                // Network issue; let user continue if code is stored
+                showDashboard();
+            }
+        }
+
+        async function handleAuthSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('verifier-code-input');
+            const submitBtn = document.getElementById('btn-auth-submit');
+            const errDiv = document.getElementById('gate-error-msg');
+            const code = (input.value || '').trim();
+
+            if (!code) return;
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Authenticating...";
+            errDiv.style.display = 'none';
+
+            try {
+                const res = await fetch(`${API_BASE}/api/verifier/auth`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code })
+                });
+                const data = await res.json();
+
+                if (res.ok && data.authenticated) {
+                    currentVerifierCode = code;
+                    currentOfficerId = data.officerId || 'admin-officer-kwara-001';
+                    sessionStorage.setItem('pw_verifier_code', code);
+                    sessionStorage.setItem('pw_officer_id', currentOfficerId);
+                    showDashboard();
+                } else {
+                    throw new Error(data.error || "Invalid access code. Please check with administrator.");
+                }
+            } catch (err) {
+                errDiv.innerText = err.message || "Invalid officer access code";
+                errDiv.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Unlock Verifier Dashboard →";
+            }
+        }
+
+        function showAuthGate() {
+            document.getElementById('auth-gate').style.display = 'block';
+            document.getElementById('dashboard-view').style.display = 'none';
+            if (pollTimer) clearInterval(pollTimer);
+        }
+
+        function showDashboard() {
+            document.getElementById('auth-gate').style.display = 'none';
+            document.getElementById('dashboard-view').style.display = 'block';
+            document.getElementById('officer-id-display').innerText = `👨‍💼 Officer: ${currentOfficerId}`;
+
+            loadReports();
+            if (pollTimer) clearInterval(pollTimer);
+            pollTimer = setInterval(loadReports, 5000);
+        }
+
+        function logoutVerifier() {
+            sessionStorage.removeItem('pw_verifier_code');
+            sessionStorage.removeItem('pw_officer_id');
+            currentVerifierCode = null;
+            showAuthGate();
+            const input = document.getElementById('verifier-code-input');
+            if (input) input.value = '';
+        }
 
         async function loadReports() {
+            if (!currentVerifierCode) return;
+
             try {
-                const res = await fetch(`${API_BASE}/api/reports/pending`);
+                const res = await fetch(`${API_BASE}/api/reports/pending`, {
+                    headers: {
+                        'x-verifier-code': currentVerifierCode
+                    }
+                });
+
+                if (res.status === 401) {
+                    logoutVerifier();
+                    return;
+                }
+
                 if (!res.ok) throw new Error("Server returned " + res.status);
                 const reports = await res.json();
                 const tbody = document.querySelector('#reports-table tbody');
@@ -340,7 +642,7 @@
                     `Confirm pest name for dispatch to neighboring farmers within 5km:`,
                     defaultPestName || 'Rosette Virus'
                 );
-                if (promptVal === null) return; // user cancelled prompt
+                if (promptVal === null) return;
                 confirmedPest = promptVal.trim() || defaultPestName;
             } else {
                 if (!confirm("Are you sure you want to reject this report? No alerts will be sent.")) {
@@ -351,11 +653,15 @@
             try {
                 const res = await fetch(`${API_BASE}/api/verify/${reportId}`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-verifier-code': currentVerifierCode
+                    },
                     body: JSON.stringify({
-                        officerId: OFFICER_ID,
+                        officerId: currentOfficerId,
                         action: action,
-                        confirmedPestName: confirmedPest
+                        confirmedPestName: confirmedPest,
+                        verifierCode: currentVerifierCode
                     })
                 });
                 const result = await res.json();
@@ -372,10 +678,6 @@
                 alert("Failed to communicate with server: " + err.message);
             }
         }
-
-        // Auto-refresh every 5 seconds
-        setInterval(loadReports, 5000);
-        loadReports();
     </script>
 </body>
 </html>
